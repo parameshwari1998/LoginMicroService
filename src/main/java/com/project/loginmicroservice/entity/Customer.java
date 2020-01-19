@@ -13,7 +13,7 @@ import java.math.BigInteger;
 @Table(name="CUSTOMER")
 public class Customer {
     @Id
-    @Column(name = "id")
+    @Column(name = "customer_id")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private String customerId;
     private String name;
