@@ -4,24 +4,22 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import java.math.BigInteger;
 
 @Entity
 @Getter
 @Setter
-@Table(name="CUSTOMER")
+@Table(name = Customer.CUSTOMER_TABLE_NAME)
 public class Customer {
+
+    public static final String CUSTOMER_TABLE_NAME = "CUSTOMER";
+
     @Id
-    @Column(name = "customer_id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private String customerId;
     private String name;
-    private String password;
     private String address;
     private BigInteger contactNo;
-    private String loginMethod;
-    private Email email;
+    private String email;
     private String imageUrl;
 
 }
