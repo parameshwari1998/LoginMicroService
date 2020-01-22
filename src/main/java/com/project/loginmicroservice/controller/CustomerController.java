@@ -6,9 +6,10 @@ import com.project.loginmicroservice.entity.Customer;
 import com.project.loginmicroservice.service.CustomerService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+
+@CrossOrigin("*")
 @RestController
 @RequestMapping("/login")
 public class CustomerController {
@@ -16,12 +17,14 @@ public class CustomerController {
     @Autowired
     CustomerService customerService;
 
+    @GetMapping("/verify/{id}")
     boolean verifyUser(String customerId){
         return customerService.isUser(customerId);
     }
 
 
-    ResponseDto<Customer> getUserDetails(String customerId){
+    @GetMapping("/{id}")
+    ResponseDto<Customer> getUserDetails(@PathVariable("id") String customerId){
         ResponseDto<Customer> responseDto = new ResponseDto<>();
         try{
             Customer customerCreated=customerService.getUserDetails(customerId);
@@ -36,7 +39,8 @@ public class CustomerController {
     }
 
 
-    ResponseDto<Customer> createUser(CustomerDto customerDto){
+    @PostMapping("/")
+    ResponseDto<Customer> createUser(@RequestBody CustomerDto customerDto){
         Customer customer=new Customer();
         BeanUtils.copyProperties(customerDto,customer);
         ResponseDto<Customer> responseDto = new ResponseDto<>();
@@ -50,9 +54,5 @@ public class CustomerController {
         }
         return responseDto;
     }
-
-
-
-
 
 }
