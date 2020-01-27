@@ -17,20 +17,21 @@ public class CustomerController {
     @Autowired
     CustomerService customerService;
 
-    @GetMapping("/verify/{id}")
-    boolean verifyUser(String customerId){
+
+    @GetMapping("/verify")
+    boolean verifyMerchant(@RequestHeader("customerId") String customerId){
         return customerService.isUser(customerId);
     }
 
 
-    @GetMapping("/{id}")
-    ResponseDto<Customer> getUserDetails(@PathVariable("id") String customerId){
+    @GetMapping("/")
+    ResponseDto<Customer> getUserDetails(@RequestHeader("customerId") String customerId){
         ResponseDto<Customer> responseDto = new ResponseDto<>();
         try{
             Customer customerCreated=customerService.getUserDetails(customerId);
-            if(customerCreated.getCustomerId()!=null)
-                responseDto.setData(customerCreated);
-                responseDto.setSuccess(true);
+            customerCreated.setCustomerId("");
+            responseDto.setData(customerCreated);
+            responseDto.setSuccess(true);
             }catch (Exception e){
                 responseDto.setSuccess(false);
                 responseDto.setMessage("No such customer exists!!");
@@ -40,17 +41,39 @@ public class CustomerController {
 
 
     @PostMapping("/")
-    ResponseDto<Customer> createUser(@RequestBody CustomerDto customerDto){
+    ResponseDto<Customer> createUser(@RequestBody CustomerDto customerDto,@RequestHeader("customerId") String customerId,@RequestHeader("customerEmail") String customerEmail){
         Customer customer=new Customer();
+        customerDto.setEmail(customerEmail);
         BeanUtils.copyProperties(customerDto,customer);
+        customer.setCustomerId(customerId);
         ResponseDto<Customer> responseDto = new ResponseDto<>();
         try{
             Customer customerCreated=customerService.createCustomer(customer);
+            customerCreated.setCustomerId("");
             responseDto.setData(customerCreated);
             responseDto.setSuccess(true);
         }catch (Exception e){
             responseDto.setSuccess(false);
             responseDto.setMessage("Customer is not created!!");
+        }
+        return responseDto;
+    }
+
+
+    @PostMapping("/update")
+    ResponseDto<Customer> updateUser(@RequestBody CustomerDto customerDto,@RequestHeader("customerId") String customerId){
+        Customer customer=new Customer();
+        BeanUtils.copyProperties(customerDto,customer);
+        customer.setCustomerId(customerId);
+        ResponseDto<Customer> responseDto = new ResponseDto<>();
+        try{
+            Customer customerCreated=customerService.createCustomer(customer);
+            customerCreated.setCustomerId("");
+            responseDto.setData(customerCreated);
+            responseDto.setSuccess(true);
+        }catch (Exception e){
+            responseDto.setSuccess(false);
+            responseDto.setMessage("Profile is not updated!!");
         }
         return responseDto;
     }
